@@ -2,6 +2,10 @@
 
 Before running, ensure required packages are installed:
     pip install instaloader openpyxl
+
+Provide login credentials via environment variables:
+    export INSTAGRAM_USERNAME="your_username"
+    export INSTAGRAM_PASSWORD="your_password"
 """
 
 import os
@@ -30,6 +34,17 @@ def main():
     loader = instaloader.Instaloader(download_comments=False,
                                      save_metadata=False,
                                      filename_pattern='{shortcode}_{index}')
+
+    username = os.getenv('INSTAGRAM_USERNAME')
+    password = os.getenv('INSTAGRAM_PASSWORD')
+    if not username or not password:
+        print("Instagram credentials not found. Set INSTAGRAM_USERNAME and INSTAGRAM_PASSWORD environment variables.")
+        sys.exit(1)
+    try:
+        loader.login(username, password)
+    except Exception as exc:
+        print(f"Login failed: {exc}")
+        sys.exit(1)
 
     profile_name = 'unistays.co'
     try:
